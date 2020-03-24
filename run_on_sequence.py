@@ -336,10 +336,10 @@ if __name__ == '__main__':
         isThird_road_exist = (len3>limit_pts) and (len4>limit_pts)
         pt_middle_car = direction_pts[1]
 
-	img = cv2.polylines(img, [np.int32(lane1)], False, [128, 128, 255], 3)
-	img = cv2.polylines(img, [np.int32(lane2)], False, [128, 128, 255], 3)
-	img = cv2.polylines(img, [np.int32(lane3)], False, [128, 128, 255], 3)
-	img = cv2.polylines(img, [np.int32(lane4)], False, [128, 128, 255], 3)
+        img = cv2.polylines(img, [np.int32(lane1)], False, [128, 128, 255], 3)
+        img = cv2.polylines(img, [np.int32(lane2)], False, [128, 128, 255], 3)
+        img = cv2.polylines(img, [np.int32(lane3)], False, [128, 128, 255], 3)
+        img = cv2.polylines(img, [np.int32(lane4)], False, [128, 128, 255], 3)
 
         cv2.imshow("img", img)
         k = cv2.waitKey(0)
