@@ -274,7 +274,7 @@ if __name__ == '__main__':
     
     sess =  tf.Session()
     # restore the best trained model:
-    saver.restore(sess, "/home/essys/projects/segmentation-master_deeper_model/training_logs/model_model_4x/checkpoints/model_model_4x_step_5000_epoch_33.ckpt")
+    saver.restore(sess, "./training_logs/model_augmented_best_epoch_ 12.ckpt")
     
     logits = tf.nn.softmax(model.net.logits, -1)
     exist_logits = model.net.line_existance_logit
