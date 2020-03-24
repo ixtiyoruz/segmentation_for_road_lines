@@ -2,7 +2,7 @@
 
 currently it works only with culane dataset
 <pre>
-first download culane dataset and extract it, then download seg_label_generate github repository to convert the labels to rgb
+first download culane dataset and extract it, then download seg_label_generate github repository to convert the labels to normal image
 https://github.com/XingangPan/seg_label_generate
 
 
