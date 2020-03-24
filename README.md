@@ -6,7 +6,7 @@ first download culane dataset and extract it, then download seg_label_generate g
 https://github.com/XingangPan/seg_label_generate
 
 
-please put the  label width as 10 px, less than this model will hardly learn more than this lanes will be errorous
+please put the  label width as 10 px, if it is less than 10 px model will hardly learn something, more than 10px predictions will be errorous
 just change this line :
 https://github.com/XingangPan/seg_label_generate/blob/2cabaca76885d6167207a8e74edf2a7409e32379/src/main.cpp#L37
 
