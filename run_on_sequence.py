@@ -335,87 +335,18 @@ if __name__ == '__main__':
         isSecond_road_exist = (len2>limit_pts) and (len3>limit_pts)
         isThird_road_exist = (len3>limit_pts) and (len4>limit_pts)
         pt_middle_car = direction_pts[1]
-    #    img = frm.copy()
-        if(len1 > limit_pts):
-    #        img = cv2.polylines(img, [np.int32(lane1)], False, [128, 128, 255], 3)
-         
-            lane1, lane1_fixed = fill_lane(lane1,up_row=up_row)
-            if(len(lane1_fixed) > limit_pts):
-                pt1_m =  tuple(np.int32(np.sum(lane1_fixed, 0)/ len(lane1_fixed)))
-                img = cv2.line(img, pt_middle_car, pt1_m,[128, 128, 255], 1)   
-                distance_y = calculate_distance(cam_param['focal_length'],cam_param['h_cam'] ,cam_param['pxmy'], abs(pt1_m[1]-pt_middle_car[1]))
-                distance_x = abs(pt1_m[0]-pt_middle_car[0])/ cam_param['pxmx']
-                distance = math.sqrt(distance_x * distance_x + distance_y * distance_y)
-                cv2.putText(img, str(round(distance,2)) + " m", pt1_m,cv2.FONT_HERSHEY_SIMPLEX, 1,[255, 0, 255], 1)
-                img = cv2.polylines(img, [np.int32(lane1_fixed)], False, colors[1], line_width)
-                lane1_fixed = change_pts_size(np.ndarray.tolist(lane1_fixed),[img_height, img_width],[imh-crop_h,imw])
-                lane1_fixed = change_pts_size(lane1_fixed, crop= crop_h)
-                shape1 = get_shape([255, 0, 0, 128], lane1_fixed, {}, None, 'left1')
-                shapes.append(shape1)
-                
-        if(len2 > limit_pts):
-    #        img = cv2.polylines(img, [np.int32(lane2)], False, [128, 128, 255], 3)
-            lane2, lane2_fixed = fill_lane(lane2,up_row=up_row)
-            if(len(lane2_fixed) > limit_pts):
-                pt2_m =  tuple(np.int32(np.sum(lane2_fixed, 0)/ len(lane2_fixed)))
-                img = cv2.line(img, pt_middle_car, pt2_m,[128, 128, 255], 1)
-                distance_y = calculate_distance(cam_param['focal_length'],cam_param['h_cam'] ,cam_param['pxmy'], abs(pt2_m[1]-pt_middle_car[1]))
-                distance_x = abs(pt2_m[0]-pt_middle_car[0])/ cam_param['pxmx']
-                distance = math.sqrt(distance_x * distance_x + distance_y * distance_y)
-                cv2.putText(img, str(round(distance,2)) + " m", pt2_m,cv2.FONT_HERSHEY_SIMPLEX, 1,[255, 0, 255], 1)
-                img = cv2.polylines(img, [np.int32(lane2_fixed)], False, colors[1], line_width)
-                lane2_fixed = change_pts_size(np.ndarray.tolist(lane2_fixed),[img_height, img_width],[imh-crop_h,imw])
-                lane2_fixed = change_pts_size(lane2_fixed, crop= crop_h)
-                shape2 = get_shape([255, 0, 0, 128], lane2_fixed, {}, None, 'left2')
-                shapes.append(shape2)
-                
-        if(len3 > limit_pts):
-    #        img = cv2.polylines(img, [np.int32(lane3)], False, [128, 128, 255], 3)
-            lane3, lane3_fixed = fill_lane(lane3,up_row=up_row)
-            if(len(lane3_fixed) > limit_pts):
-                pt3_m =  tuple(np.int32(np.sum(lane3_fixed, 0)/ len(lane3_fixed)))
-                img = cv2.line(img, pt_middle_car, pt3_m,[128, 128, 255], 1)
-                distance_y = calculate_distance(cam_param['focal_length'],cam_param['h_cam'] ,cam_param['pxmy'], abs(pt3_m[1]-pt_middle_car[1]))
-                distance_x = abs(pt3_m[0]-pt_middle_car[0])/ cam_param['pxmx']
-                distance = math.sqrt(distance_x * distance_x + distance_y * distance_y)
-                cv2.putText(img, str(round(distance,2)) + " m", pt3_m,cv2.FONT_HERSHEY_SIMPLEX, 1,[255, 0, 255], 1)
-                img = cv2.polylines(img, [np.int32(lane3_fixed)], False, colors[1], line_width)
-                lane3_fixed = change_pts_size(np.ndarray.tolist(lane3_fixed),[img_height, img_width],[imh-crop_h,imw])
-                lane3_fixed = change_pts_size(lane3_fixed, crop= crop_h)
-                shape3 = get_shape([255, 0, 0, 128], lane3_fixed, {}, None, 'right1')
-                shapes.append(shape3)  
-                
-        if(len4 > limit_pts):
-    #        img = cv2.polylines(img, [np.int32(lane4)], False, [128, 128, 255], 3)
-            lane4,lane4_fixed = fill_lane(lane4,up_row=up_row)
-            if(len(lane4_fixed) > limit_pts):
-                pt4_m =  tuple(np.int32(np.sum(lane4_fixed, 0)/ len(lane4_fixed)))
-                img = cv2.line(img, pt_middle_car, pt4_m,[128, 128, 255], 1)
-                distance_y = calculate_distance(cam_param['focal_length'],cam_param['h_cam'] ,cam_param['pxmy'], abs(pt4_m[1]-pt_middle_car[1]))
-                distance_x = abs(pt4_m[0]-pt_middle_car[0])/ cam_param['pxmx']
-                distance = math.sqrt(distance_x * distance_x + distance_y * distance_y)
-                cv2.putText(img, str(round(distance,2)) + " m", pt4_m,cv2.FONT_HERSHEY_SIMPLEX, 1,[255, 0, 255], 1)
-                img = cv2.polylines(img, [np.int32(lane4_fixed)], False, colors[1], line_width)
-                lane4_fixed = change_pts_size(np.ndarray.tolist(lane4_fixed),[img_height, img_width],[imh-crop_h,imw])
-                lane4_fixed = change_pts_size(lane4_fixed, crop= crop_h)
-                shape4 = get_shape([255, 0, 0, 128], lane4_fixed, {}, None, 'right2')
-                shapes.append(shape4)
-                
+
+	img = cv2.polylines(img, [np.int32(lane1)], False, [128, 128, 255], 3)
+	img = cv2.polylines(img, [np.int32(lane2)], False, [128, 128, 255], 3)
+	img = cv2.polylines(img, [np.int32(lane3)], False, [128, 128, 255], 3)
+	img = cv2.polylines(img, [np.int32(lane4)], False, [128, 128, 255], 3)
+
         cv2.imshow("img", img)
         k = cv2.waitKey(0)
         if(k  == 27):
             cap.release()
             cv2.destroyAllWindows()
             break
-        elif(k == 115):
-            img_name = 'image_' + video_name.split('.')[0] + '_' + str(counter) + '.png'
-            json_name = 'image_' +video_name.split('.')[0] + '_' + str(counter) + '.json'
-            out_dir = './data/'
-            img_json_name = '../taken_images/' + img_name
-            img_name = out_dir + 'taken_images/' + img_name
-            json_name = out_dir + 'taken_labels/' + json_name
-            save_label(json_name, {},shapes, [0, 255, 0, 128], [255, 0, 0, 128],img_json_name, None, imh, imw )
-            cv2.imwrite(img_name, frm)
-    
+
     # validation loss 2 ta epoch oldinga
 # 
