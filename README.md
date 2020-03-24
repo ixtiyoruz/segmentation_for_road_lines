@@ -16,4 +16,8 @@ then run preprocess_data.py by changing inside of it accordingly
 now you are ready to train it
 firstly turn off distill_loss
 after one epoch, if it finishes successfully turn it on and change the class_weights of background to 0.4 (if it doesnt work to 0.1, but it should work)
+
+in order to run on video please look at run_on_reference.py file
 </pre>
+
+
