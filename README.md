@@ -17,7 +17,10 @@ now you are ready to train it
 firstly turn off distill_loss
 after one epoch, if it finishes successfully turn it on and change the class_weights of background to 0.4 (if it doesnt work to 0.1, but it should work)
 
-in order to run on video please look at run_on_reference.py file
+in order to run on video :
+  1. put test.mp4 named video in the main folder of the project
+  2. run python run_on_sequence.py
+
 </pre>
 
 
