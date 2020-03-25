@@ -120,127 +120,7 @@ def prob2lines_CULane(seg_pred, exist, resize_shape=[288, 800], smooth=True, y_p
             coords = getLane_CULane(prob_map, y_px_gap, pts, thresh, resize_shape)
             coordinates.append([[coords[j],np.int32( H-1 - j*y_px_gap)] for j in range(pts) if coords[j] > 0])
     return coordinates
-def rotate_bound(image, angle):
-    # grab the dimensions of the image and then determine the
-    # center
-    (h, w) = image.shape[:2]
-    (cX, cY) = (w // 2, h // 2)
- 
-    # grab the rotation matrix (applying the negative of the
-    # angle to rotate clockwise), then grab the sine and cosine
-    # (i.e., the rotation components of the matrix)
-    M = cv2.getRotationMatrix2D((cX, cY), -angle, 1.0)
-    cos = np.abs(M[0, 0])
-    sin = np.abs(M[0, 1])
- 
-    # compute the new bounding dimensions of the image
-    nW = int((h * sin) + (w * cos))
-    nH = int((h * cos) + (w * sin))
- 
-    # adjust the rotation matrix to take into account translation
-    M[0, 2] += (nW / 2) - cX
-    M[1, 2] += (nH / 2) - cY
- 
-    # perform the actual rotation and return the image
-    return cv2.warpAffine(image, M, (nW, nH))
 
-def calculate_distance(focal_length, h_cam, pix_per_meter, h_img):
-    Z = focal_length * pix_per_meter * h_cam / h_img
-    return Z
-def read_camera_parameters():
-    with (open("./wide_dist_pickle.p", "rb")) as openfile:
-        dist_pickle = pickle.load(openfile)
-    mtx = dist_pickle["mtx"]
-#    dist = dist_pickle["dist"]
-    f1_x = mtx[0][0]
-    f1_y = mtx[1][1]
-    o_x = mtx[0][2]
-    o_y = mtx[1][2]
-    pix_per_meter_y = 1.84 / 20#1.19
-    pix_per_meter_x = 4*14.8#1.19
-    h_cam = 2.5#7.5
-    focal_length = math.sqrt(math.pow(f1_x - o_x, 2)  + math.pow(f1_y - o_y, 2))
-    res = {'pxmy':pix_per_meter_y,'pxmx':pix_per_meter_x,'focal_length':focal_length,'h_cam':h_cam}
-    return res
-class Tracking:
-    def __init__(self, initial_lane,num_of_features):
-        self.initial_state_mean = []
-        self.transaction_matrix = []
-        for i in range(num_of_features):
-            try:
-#                print('-')
-                self.initial_state_mean.append(initial_lane[i])
-            except:
-#                print('+')
-                self.initial_state_mean.append(initial_lane[-1])
-            self.initial_state_mean.append(0)
-            
-            tt = np.zeros(num_of_features * 2)
-            tt1 = np.zeros(num_of_features * 2)
-            tt[i * 2] = 1
-            tt[i * 2+1] = 1
-            tt1[i * 2+1] = 1
-            self.transaction_matrix.append(list(tt))
-            self.transaction_matrix.append(list(tt1))
-#        print(self.transaction_matrix)
-#            transition_matrix = [[1, 1, 0, 0],
-#                                 [0, 1, 0, 0],
-#                                 [0, 0, 1, 1],
-#                                 [0, 0, 0, 1]]
-#    def update
-
-#def norm_lane(lane, norm_size=3):
-#    for i in np.arange(0, len(lane), norm_size):
-#        diff = [np.array(lane[i])-np.array(lane[i+1]) for j in range(min(i+norm_size, len(lane) -1))]
-#        diff = np.sum(diff, 0) / len(diff)
-#        diff = len(np.where(np.array(diff) == 0)[0]) == 0
-#        
-    
-    
-def fill_lane(lane, up_row=190, bottom_row=287, limit=2):
-    lane_fixed_both = lane.copy()
-    if(lane[0][1] < up_row):
-        return [],[]
-    tmp = lane[0]
-    if(len(lane) < limit):
-        return np.array(lane), np.array([])
-    diff_bottom = [np.array(lane[i])-np.array(lane[i+1]) for i in range(min(limit, len(lane) -1))]
-    diff_bottom = np.sum(diff_bottom, 0) / len(diff_bottom)
-    diff_b_bottom = len(np.where(np.array(diff_bottom) == 0)[0]) == 0
-    
-    diff_up = [np.array(lane[i+1])-np.array(lane[i]) for i in np.arange(-1*limit, -1 , 1)]
-    diff_up = np.sum(diff_up, 0) / len(diff_up)
-    diff_b_up = len(np.where(np.array(diff_up) == 0)[0]) == 0
-    
-    
-    print(diff_up)
-    print(diff_bottom)
-    if(tmp[1] < bottom_row and diff_b_bottom):
-         pr = abs((bottom_row - tmp[1]) / diff_bottom[1])
-         tmp = np.array(tmp) + pr * diff_bottom
-         lane_fixed_both = [list(tmp)] + lane
-         lane = [list(tmp)] + lane
-    ## if line points ar not long enough to up_row
-    if(lane_fixed_both[-1][1] > up_row and len(lane_fixed_both) >=2 and diff_b_up and up_row > 0):
-        
-        tmp = lane_fixed_both[-1]
-        # how much we need to subtract
-        pr = abs((up_row - lane_fixed_both[-1][1]) / diff_up[1])
-#        tmp = np.array(tmp) - pr * diff_up
-        addition = pr * diff_up
-        tmp = [tmp[0] -addition[0],tmp[1] -addition[1]]
-        lane_fixed_both =  lane_fixed_both + [list(tmp)]
-        lane =  lane + [list(tmp)]
-
-        ## if line points are higher than up_row
-    if(lane_fixed_both[-1][1] < up_row and len(lane_fixed_both) >=2 and up_row > 0):
-        lane_fixed_both = lane_fixed_both[:-1]
-#        print(lane_fixed_both)
-#        print(up_row)
-        _,lane_fixed_both = fill_lane(lane_fixed_both, up_row=up_row, bottom_row=bottom_row, limit=limit)
-    elif(lane_fixed_both[-1][1] < up_row and len(lane_fixed_both) <2 and up_row > 0):
-        lane_fixed_both = []
-    return np.array(lane), np.array(lane_fixed_both)
 if __name__ == '__main__':    
     os.environ["CUDA_VISIBLE_DEVICES"] = "2"
     project_dir = "./"
@@ -288,12 +168,11 @@ if __name__ == '__main__':
     cap = cv2.VideoCapture(video_name)
     ret, frm = cap.read()
     counter  = 0
-    cam_param = read_camera_parameters()
     
     #means = []
     while(True):
         counter =counter + 1
-        if(counter % 3 == 0):
+        if(counter % 10 == 0):
             cap.grab()
             ret, frm = cap.retrieve()
         else:
@@ -312,11 +191,9 @@ if __name__ == '__main__':
         start = time.time()
         prob,exist = sess.run([logits, exist_logits], feed_dict=feed_dict)
     
-    #    print('time usage:', time.time() - start, ' fps:', 1./(time.time() - start))
-        lane_coords = prob2lines_CULane(prob[0], exist[0], y_px_gap=15, pts=18,thresh=0.4, resize_shape=None)#np.shape(frm)[:-1])
-    #    print(len(lane_coords[0]),len(lane_coords[1]),len(lane_coords[2]),len(lane_coords[3]),)
+        
+        lane_coords = prob2lines_CULane(prob[0], exist[0], y_px_gap=15, pts=18,thresh=0.6, resize_shape=None)#np.shape(frm)[:-1])
         colors = [(0,0,0), (0,255,0), (0,255,255), (255,255,0), (255,0,0)]
-        direction_pts = [(400,188),(400,288)]
     #    img = cv2.line(img, direction_pts[0], direction_pts[1],[128, 128, 255], 3)
         
         lane1 = lane_coords[0]
@@ -330,19 +207,13 @@ if __name__ == '__main__':
         len3 = len(lane3)
         len4 = len(lane4)
         
-        limit_pts = 1
-        isFirst_road_exist = (len1>limit_pts) and (len2>limit_pts)
-        isSecond_road_exist = (len2>limit_pts) and (len3>limit_pts)
-        isThird_road_exist = (len3>limit_pts) and (len4>limit_pts)
-        pt_middle_car = direction_pts[1]
-
         img = cv2.polylines(img, [np.int32(lane1)], False, [128, 128, 255], 3)
         img = cv2.polylines(img, [np.int32(lane2)], False, [128, 128, 255], 3)
         img = cv2.polylines(img, [np.int32(lane3)], False, [128, 128, 255], 3)
         img = cv2.polylines(img, [np.int32(lane4)], False, [128, 128, 255], 3)
-
+        print('time usage:', time.time() - start, ' fps:', 1./(time.time() - start))
         cv2.imshow("img", img)
-        k = cv2.waitKey(0)
+        k = cv2.waitKey(3)
         if(k  == 27):
             cap.release()
             cv2.destroyAllWindows()

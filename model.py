@@ -4,7 +4,7 @@ import pickle
 import numpy as np
 from utilities import PReLU, spatial_dropout, max_unpool, spatial_softmax,flatten
 from utilities import get_iou_loss, distill_loss, l2_loss
-from nets.enet_4x import EnetNet
+from nets.enet import EnetNet
 class ENet_model(object):
 
     def __init__(self, model_id, img_height=288, img_width=800, batch_size=4,no_classes=5):
