@@ -25,5 +25,9 @@ in order to run on video :
   2. run python run_on_sequence.py
 
 </pre>
+reference repos:
+https://github.com/cardwing/Codes-for-Lane-Detection
 
+references:
+https://arxiv.org/abs/1908.00821
 
