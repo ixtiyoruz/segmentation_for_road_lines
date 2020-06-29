@@ -37,20 +37,7 @@ def getLane_CULane(prob_map, y_px_gap, pts, thresh, resize_shape=[288, 800]):
     -------------------
     coords : x coords buttom up every y_px_gap px, 0 for non exist in resized shape
     """
-    
-#    Q = 3e-2 # bu bizning estimationimizning xatoligi
-#    sz = 11
-#    # allocate space for arrays
-#    xhat=np.zeros(sz)      # a current estimate of x
-#    P=np.zeros(sz)         # a current error estimate
-#    xhatminus=np.zeros(sz) # a priori estimate of x
-#    Pminus=np.zeros(sz)    # a priori error estimate
-#    K=np.zeros(sz)         # gain or blending factor
-#    
-#    R = 4e-2
-#
-#    xhat[0] = 0.0
-#    P[0] = 1.0
+
 
     if(resize_shape is None):
         resize_shape = prob_map.shape
@@ -68,20 +55,7 @@ def getLane_CULane(prob_map, y_px_gap, pts, thresh, resize_shape=[288, 800]):
         id = np.argmax(line)
         if(line[id] > thresh):
             coords[i] = int(id/ w * W)
-#            if(i == 0):
-#                xhat[i] = int(id)
-#                Pminus[i] = 1.
-#                K[i] = 1.
-#                P[i] = 1.
-#                coords[i] = xhat[i]
-#            else:
-#                xhatminus[i] = xhat[i-1]
-#                Pminus[i] = P[i-1]+Q
-#                K[i] = Pminus[i]/( Pminus[i]+R )
-#                xhat[i] = xhatminus[i]+K[i]*(int(id)-xhatminus[i])
-#                P[i] = (1-K[i])*Pminus[i]
-#                coords[i] = xhat[i]
-#            print(coords[i], int(id))
+
     if((coords > 0).sum() < 2):
         coords = np.zeros(pts)
     return coords
